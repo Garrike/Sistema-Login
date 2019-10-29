@@ -1,0 +1,142 @@
+<head>
+  <title>auth-app</title>
+  <meta charset="UTF-8">
+  <meta name="google-signin-scope" content="profile email">
+  <meta name="google-signin-client_id" content="90507359551-8mi8qjb2ljh9aapqa9tjn6ipdvvt5haq.apps.googleusercontent.com">
+  <script src="https://apis.google.com/js/platform.js" async defer></script>  
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+</head>
+
+<body>
+  {{#if currentUser}}
+    {{> dashboard}}
+  {{else}}
+    <div class="cont">
+      <div class="container" style="background-color: #6293B2;
+      width: 60%; display: inline-block;">
+        <div class="sub-cont" style=" margin: 5px; padding: 5px; right: 40%;
+          -ms-transform: translate(-50%, -50%); position: absolute; padding-top: 5%;
+          transform: translate(-50%, -50%); top: 35%; vertical-align: middle;">
+          <div class="row">      
+            <div class="main">      
+              <h3 style="text-align: center;">Logue sua conta</h3>
+              <div class="row">
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                  <a href="#" class="btn btn-lg btn-primary btn-block">Facebook</a>
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                  <!--<div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark" data-longtitle="true" data-lang="pt-BR"></div>-->
+                  <a href="#googleLoginButton" class="btn btn-lg btn-primary btn-block login" value="googleLoginButton">Google</a>
+                </div>
+              </div>
+              <div class="login-or" style="text-align: center;">
+                <hr class="hr-or">
+                <span class="span-or"><h4>OU</h4></span>
+              </div>
+        
+              <h2>Bem Vindo ao Meteor!</h2>
+
+              {{> login}}<br>
+                      
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: inline-block; position: absolute; top: 12%; left: 53.5%; height: 400px; border-left: 2px solid #7492D3;"></div>
+
+      <div class="sub-cont" style="
+      width: 30%; display: inline-block;">
+        <div class="sub-cont" style=" margin: 5px; padding: 5px; left: 50%;
+           vertical-align: middle; top: 42%; position: absolute; background-color: #B0D5ED;
+          -ms-transform: translate(-50%, -50%); padding-top: 5%; padding-bottom: 5%;
+          transform: translate(50%, -50%); ">
+          <!--<div class="img">
+            <div class="img__btn"></div>
+          </div>-->
+          <h3 style="text-align: center;">Registre-se</h3>
+          {{> register}}<br>
+        </div>
+      </div>
+    </div>
+  {{/if}}
+    
+  <script>
+    function onSignIn(response) {
+      // Conseguindo as informações do seu usuário:
+      var perfil = response.getBasicProfile();
+
+      // Conseguindo o ID do Usuário
+      var userID = perfil.getId();
+
+      // Conseguindo o Nome do Usuário
+      var userName = perfil.getName();
+
+      // Conseguindo o E-mail do Usuário
+      var userEmail = perfil.getEmail();
+
+      // Conseguindo a URL da Foto do Perfil
+      var userPicture = perfil.getImageUrl();
+
+      
+      //document.getElementById('user-photo').src = userPicture;
+      //document.getElementById('user-name').innerText = userName;
+      //document.getElementById('user-email').innerText = userEmail;
+      console.log(userEmail);
+      // Recebendo o TOKEN que você usará nas demais requisições à API:
+      var LoR = response.getAuthResponse().id_token;
+      
+      console.log("~ le Tolkien: " + LoR);
+      Meteor.loginWithGoogle({
+        requestPermissions: (id_token,userEmail)
+      }, function(error) {
+        if (error) {
+          
+          console.log(error); //If there is any error, will get error here
+        }else{
+          
+          console.log(Meteor.user());// If there is successful login, you will get login details here
+        }
+      });
+    };
+  </script>
+</body>
+
+<template name="register">
+  <form role="form">
+    <div class="form-group">
+      <label for="inputUsernameEmail">E-mail</label>
+      <input type="text" class="form-control" id="email">
+    </div>
+    <div class="form-group">
+      <label for="inputPassword">Senha</label>
+      <input type="password" class="form-control" id="password">
+    </div>
+    <button type="submit" class="btn btn btn-primary" value="Register">
+      Registrar
+    </button>
+  </form>
+</template>
+
+<template name="login">
+  <form role="form">
+    <div class="form-group">
+      <label for="inputUsernameEmail">E-mail</label>
+      <input type="text" class="form-control" id="login-email">
+    </div>
+    <div class="form-group">
+      <label for="inputPassword">Senha</label>
+      <input type="password" class="form-control" id="login-password">
+    </div>
+    <button type="submit" class="btn btn btn-primary" value="Login">
+      Entrar
+    </button>
+  </form>
+</template>
+
+<template name="dashboard">
+  <h3>Você está logado.</h3>
+  <h4><a href="#" class="logout btn btn btn-primary">Sair</a></h4>
+</template>
